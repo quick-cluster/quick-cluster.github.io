@@ -831,14 +831,14 @@
         }
         var call_create_cluster = function() {
             var post_data = {
-                access_key: $(#accesskey).val(),
-                secret_key: $(#secretkey).val(),
-                service_token: $(#servicetoken).val(),
-                region: $(#region).val(),
-                flavor: $(#flavor).val(),
-                nodes: $(#nodes).val(),
-                access_key: $(#storage_gbs).val(),
-            }
+                access_key: $('#accesskey').val(),
+                secret_key: $('#secretkey').val(),
+                service_token: $('#servicetoken').val(),
+                region: $('#region').val(),
+                flavor: $('#flavor').val(),
+                nodes: $('#nodes').val(),
+                storage_gbs: $('#storage_gbs').val(),
+            };
             console.log('post data is' + post_data);
             $.ajax({
                 type: 'POST',
