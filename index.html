@@ -841,10 +841,11 @@
             };
             console.log('post data is' + post_data);
             $.ajax({
-                type: 'POST',
+                type: 'post',
                 url: 'http://52.66.167.168:8888/v1/clusters',
-                datatype: 'json',
-                data: post_data,
+                dataType: 'json',
+                data: JSON.stringify(post_data),
+                contentType: "application/json",
                 cache: 'false',
                 success: function(response) {
                     console.log('create cluster called');
