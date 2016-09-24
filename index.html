@@ -285,10 +285,92 @@
 		<div class="container">
 			<div class="row row-bottom-padded-lg" id="about-us">
 				<div class="col-md-12 section-heading text-center">
-					<h2 class="to-animate">About Us</h2>
+					<h2 class="to-animate">Create a cluster now</h2>
+
 					<div class="row">
 						<div class="col-md-8 col-md-offset-2 to-animate">
-							<h3>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</h3>
+							<h3>Instantly create a cluster. Just fill in the information below</h3>
+
+
+<form class="form-horizontal">
+
+  <div class="form-group">
+    <label for="accesskey" class="col-sm-3 control-label">Access Key</label>
+    <div class="col-sm-9">
+      <input class="form-control" id="accesskey" placeholder="Your AWS Access Key">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="secretkey" class="col-sm-3 control-label">Secret Key</label>
+    <div class="col-sm-9">
+      <input class="form-control" id="secretkey" placeholder="Your AWS Secret Key">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="servicetoken" class="col-sm-3 control-label">Service Token (optional)</label>
+    <div class="col-sm-9">
+      <input class="form-control" id="servicetoken" placeholder="Your Service Token if using temporary credentials">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="region" class="col-sm-3 control-label">Region</label>
+    <div class="col-sm-9">
+        <select class="form-control" id="region">
+            <option value="us-east-1">us-east-1 (N. Virginia)</option>
+            <option value="us-west-1">us-west-1 (N. California)</option>
+            <option value="us-west-2">us-west-2 (Oregon)</option>
+            <option value="eu-west-1">eu-west-1 (Ireland)</option>
+            <option value="eu-central-1">eu-central-1 (Frankfurt)</option>
+            <option value="ap-northeast-1">ap-northeast-1 (Tokyo)</option>
+            <option value="ap-northeast-2">ap-northeast-2 (Seoul)</option>
+            <option value="ap-southeast-1">ap-southeast-1 (Singapore)</option>
+            <option value="ap-southeast-2">ap-southeast-2 (Sydney)</option>
+            <option value="ap-south-1">ap-south-1 (Mumbai)</option>
+            <option value="sa-east-1">sa-east-1 (Sao Paulo)</option>
+        </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="flavor" class="col-sm-3 control-label">Flavor</label>
+    <div class="col-sm-9">
+      <input class="form-control" id="flavor" placeholder="Enter a valid instance type (also called 'flavor')">
+        <!-- # TODO(rushiagr): use a dropdown for flavors in future -->
+        <!-- <select class="form&#45;control" id="flavor"> -->
+        <!--     <option value=""></option> -->
+        <!-- </select> -->
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="nodes" class="col-sm-3 control-label">Number of Nodes</label>
+    <div class="col-sm-9">
+      <input class="form-control" id="nodes" placeholder="Number of nodes (e.g. '5')">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="storage_gbs" class="col-sm-3 control-label">Storage in GBs (optional)</label>
+    <div class="col-sm-9">
+      <input class="form-control" id="storage_gbs" placeholder="Storage if instance type is EBS-backed">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" id="clustercreatesubmit" class="btn btn-default">Create Cluster</button>
+    </div>
+  </div>
+
+</form>
+
+<p id="clustercreatestatus"></p>
+
+
+
 						</div>
 					</div>
 				</div>
@@ -717,6 +799,75 @@
 
 	<!-- Main JS (Do not remove) -->
 	<script src="js/main.js"></script>
+
+
+    <!-- My custom code -->
+    <!-- # TODO(rushiagr): move into a js file -->
+    <script type="text/javascript">
+    jQuery(document).ready(function ($) { // wait until the document is ready
+        // $('button#clustercreatesubmit').prop('disabled', true);
+        var uuid = '';
+
+        var myajax = function() {
+            $.ajax({
+                type: 'GET',
+                url: 'http://52.66.167.168:8888/v1/clusters/' + uuid,
+                datatype: 'json',
+                cache: 'false',
+                success: function(response) {
+                    if (response.state  == 'created') {
+                        console.log('cluster created');
+                    } else {
+                        console.log('cluster state is' + response.state);
+                        console.log('looping again...');
+                        setTimeout(myajax, 5000);
+                    }
+                    $('#clustercreatestatus').html(response.state);
+                },
+                error: function(){
+                    console.log('some error');
+                }
+            }); // End Ajax
+        }
+        var call_create_cluster = function() {
+            var post_data = {
+                access_key: $(#accesskey).val(),
+                secret_key: $(#secretkey).val(),
+                service_token: $(#servicetoken).val(),
+                region: $(#region).val(),
+                flavor: $(#flavor).val(),
+                nodes: $(#nodes).val(),
+                access_key: $(#storage_gbs).val(),
+            }
+            console.log('post data is' + post_data);
+            $.ajax({
+                type: 'POST',
+                url: 'http://52.66.167.168:8888/v1/clusters',
+                datatype: 'json',
+                data: post_data,
+                cache: 'false',
+                success: function(response) {
+                    console.log('create cluster called');
+                    console.log(response);
+                    uuid = response.id,
+                    setTimeout(myajax, 3000);
+                    $('#clustercreatestatus').html(response.state);
+                },
+                error: function(){
+                    // alert('Fuuuuuuuuuuuuuu');
+                    console.log('something wrogn! ;)');
+                }
+            }); // End Ajax
+        }
+        $('button#clustercreatesubmit').click(function(event){
+            event.preventDefault();
+            console.log('calling call_create_cluster');
+            call_create_cluster();
+            // setInterval(myajax, 3000);
+        }); // End onclick
+    });
+    </script>
+
 
 	</body>
 </html>
