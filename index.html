@@ -812,6 +812,7 @@
             $.ajax({
                 type: 'GET',
                 url: 'http://52.66.167.168:8888/v1/clusters/' + uuid,
+                // url: '/v1/clusters/' + uuid,
                 datatype: 'json',
                 cache: 'false',
                 success: function(response) {
@@ -826,6 +827,8 @@
                 },
                 error: function(){
                     console.log('some error');
+                    $('#clustercreatestatus').html('Something wrong. Retrying...');
+                    setTimeout(myajax, 5000);
                 }
             }); // End Ajax
         }
@@ -856,6 +859,7 @@
                 },
                 error: function(){
                     // alert('Fuuuuuuuuuuuuuu');
+                    $('#clustercreatestatus').html('make sure you entered right info');
                     console.log('something wrogn! ;)');
                 }
             }); // End Ajax
