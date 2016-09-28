@@ -919,7 +919,9 @@ More storage options, like volume type, multiple disks, raid configurations.
                 success: function(response) {
                     if (response.state  == 'cluster_creation_complete') {
                         console.log('cluster created');
-                    } else {
+                    } else if (response.state  == 'cluster_creation_failed') {
+                        console.log('cluster creatin failed! what to do!');
+                    }else {
                         console.log('cluster state is' + response.state);
                         console.log('looping again...');
                         setTimeout(myajax, 5000);
