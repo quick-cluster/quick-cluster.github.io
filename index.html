@@ -917,7 +917,7 @@ More storage options, like volume type, multiple disks, raid configurations.
                 datatype: 'json',
                 cache: 'false',
                 success: function(response) {
-                    if (response.state  == 'created') {
+                    if (response.state  == 'cluster_creation_complete') {
                         console.log('cluster created');
                     } else {
                         console.log('cluster state is' + response.state);
