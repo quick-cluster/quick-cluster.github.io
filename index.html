@@ -989,9 +989,9 @@ More storage options, like volume type, multiple disks, raid configurations.
                 },
                 error: function(){
                     // alert('Fuuuuuuuuuuuuuu');
+                    $('button#clustercreatesubmit').prop('disabled', false);
                     $('#clustercreatestatus').html('Something wrong. Make sure all required fields are populated.');
                     document.getElementById('clustercreatestatus').style.color = 'red';
-                    $('button#clustercreatesubmit').prop('disabled', false);
                     console.log('something wrogn! ;)');
                 }
             }); // End Ajax
