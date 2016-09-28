@@ -381,12 +381,26 @@
 
 </form>
 
-<p id="clustercreatestatus"></p>
+<!-- <p id="clustercreatestatus"></p> -->
 
 
 
 						</div>
 					</div>
+
+
+					<!-- <div class="row"> -->
+					<div id="clusterstatusdiv" class="row" style="display: none;">
+						<div class="col-md-8 col-md-offset-2 to-animate">
+							<h2>Creating Cluster</h2>
+                            <h4>Cluster ID: <span id="cluster_uuid">abcdefghabcdefghabcdefghiiiabcdefghi</span></h4>
+                            <h4 id="cluster_progress">Progress: <span id="clustercreatestatus">creating cluster</span></h4>
+                        </div>
+                    </div>
+
+
+
+
 				</div>
 
 				<!-- <div class="col&#45;md&#45;8 to&#45;animate"> -->
@@ -919,14 +933,21 @@ More storage options, like volume type, multiple disks, raid configurations.
                 success: function(response) {
                     if (response.state  == 'cluster_creation_complete') {
                         console.log('cluster created');
+                        document.getElementById('clustercreatestatus').style.color = 'green';
                     } else if (response.state  == 'cluster_creation_failed') {
                         console.log('cluster creatin failed! what to do!');
+                        document.getElementById('clustercreatestatus').style.color = 'red';
+                    } else if (response.state  == 'invalid_credentials') {
+                        console.log('cluster creatin failed! what to do!');
+                        $('#clustercreatestatus').html('Invalid credentials. Please provide valid credentials and retry.');
+                        document.getElementById('clustercreatestatus').style.color = 'red';
                     }else {
                         console.log('cluster state is' + response.state);
                         console.log('looping again...');
                         setTimeout(myajax, 5000);
                     }
-                    $('#clustercreatestatus').html(response.state);
+                    // $('#clustercreatestatus').html(response.state.split('_').join(' '));
+                    document.getElementById('clustercreatestatus').innerHTML = response.state.split('_').join(' ');
                 },
                 error: function(){
                     console.log('some error');
@@ -957,12 +978,16 @@ More storage options, like volume type, multiple disks, raid configurations.
                     console.log('create cluster called');
                     console.log(response);
                     uuid = response.id,
+                    document.getElementById('cluster_uuid').innerHTML = uuid;
                     setTimeout(myajax, 3000);
-                    $('#clustercreatestatus').html(response.state);
+                    // $('#clustercreatestatus').html(response.state.split('_').join(' '));
+                    document.getElementById('clustercreatestatus').innerHTML = response.state.split('_').join(' ');
                 },
                 error: function(){
                     // alert('Fuuuuuuuuuuuuuu');
-                    $('#clustercreatestatus').html('make sure you entered right info');
+                    $('#clustercreatestatus').html('Something wrong. Make sure all required fields are populated.');
+                    document.getElementById('clustercreatestatus').style.color = 'red';
+                    $('button#clustercreatesubmit').prop('disabled', false);
                     console.log('something wrogn! ;)');
                 }
             }); // End Ajax
@@ -971,6 +996,10 @@ More storage options, like volume type, multiple disks, raid configurations.
             event.preventDefault();
             console.log('calling call_create_cluster');
             call_create_cluster();
+            $('button#clustercreatesubmit').prop('disabled', true);
+            document.getElementById('clusterstatusdiv').style.display = 'block';
+            // document.getElementById('clustercreatestatus').innerHTML = 'zzee';
+            // document.getElementById('clustercreatestatus').style.color = 'green';
             // setInterval(myajax, 3000);
         }); // End onclick
     });
