@@ -999,8 +999,8 @@ More storage options, like volume type, multiple disks, raid configurations.
         $('button#clustercreatesubmit').click(function(event){
             event.preventDefault();
             console.log('calling call_create_cluster');
-            call_create_cluster();
             $('button#clustercreatesubmit').prop('disabled', true);
+            call_create_cluster();
             document.getElementById('clusterstatusdiv').style.display = 'block';
             // document.getElementById('clustercreatestatus').innerHTML = 'zzee';
             // document.getElementById('clustercreatestatus').style.color = 'green';
